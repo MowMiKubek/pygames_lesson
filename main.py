@@ -9,9 +9,10 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 BIRD_IMG_PATH = "assets/birdup.png"
 
-bird_acceleration = .2
-bird_max_speed = 5
-bird_init_speed = 3
+bird_acceleration = .5
+bird_max_speed = 15
+bird_init_speed = 10
+bird_max_angle = 30
 
 bird_image = pygame.image.load(BIRD_IMG_PATH)
 bird_rect = bird_image.get_rect()
@@ -37,7 +38,8 @@ class Bird(pygame.sprite.Sprite):
             self.rect.y = 0
 
     def draw(self, screen):
-        screen.blit(self.image, self.rect)
+        angle = -bird_max_angle * self.speed / self.max_speed
+        screen.blit(pygame.transform.rotate(self.image, angle), self.rect)
 
     def bounce(self):
         self.speed = -bird_init_speed
