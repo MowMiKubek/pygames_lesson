@@ -87,9 +87,17 @@ class Pipe(pygame.sprite.Sprite):
         self.rect_up.y = height_offset - self.rect_down.height - pipe_gap // 2
         self.rect_down.y = height_offset + pipe_gap // 2
 
+    def reset_pipe(self):
+        self.randomize_height()
+        self.rect_up.x = WIDTH + self.rect_down.width
+        self.rect_down.x = WIDTH + self.rect_down.width
+
     def update(self):
         self.rect_up.x -= pipe_speed
         self.rect_down.x -= pipe_speed
+
+        if self.rect_up.right < 0:
+            self.reset_pipe()
 
     def draw(self, screen):
         screen.blit(self.image_up, self.rect_up)
@@ -99,7 +107,6 @@ class Pipe(pygame.sprite.Sprite):
 pipes = pygame.sprite.Group()
 pipes.add(Pipe(WIDTH + pipe_offset))
 pipes.add(Pipe(WIDTH + pipe_offset*2))
-pipes.add(Pipe(WIDTH + pipe_offset*3))
 
 bg_image = pygame.image.load(BACKGROUND_PATH)
 bird = Bird()
