@@ -1,3 +1,5 @@
+import random
+
 import pygame
 
 pygame.init()
@@ -12,6 +14,8 @@ BACKGROUND_PATH = "assets/bg.png"
 BIRD_UP_IMG_PATH = "assets/birdup.png"
 BIRD_DOWN_IMG_PATH = "assets/birddown.png"
 
+PIPE_UP_IMG_PATH = "assets/pipedown.png"
+PIPE_DOWN_IMG_PATH = "assets/pipeup.png"
 
 bird_acceleration = .5
 bird_max_speed = 15
@@ -21,6 +25,10 @@ bird_max_angle = 30
 bird_image = pygame.image.load(BIRD_UP_IMG_PATH)
 bird_rect = bird_image.get_rect()
 bird_rect.center = (WIDTH // 2, HEIGHT // 2)
+
+pipe_gap = 200
+pipe_offset = 400
+pipe_speed = 3
 
 
 class Bird(pygame.sprite.Sprite):
@@ -61,6 +69,38 @@ class Bird(pygame.sprite.Sprite):
         self.speed = -bird_init_speed
 
 
+class Pipe(pygame.sprite.Sprite):
+    def __init__(self, x_position):
+        super().__init__()
+        self.image_up = pygame.image.load(PIPE_UP_IMG_PATH)
+        self.image_down = pygame.image.load(PIPE_DOWN_IMG_PATH)
+        self.rect_up = self.image_up.get_rect()
+        self.rect_down = self.image_down.get_rect()
+
+        self.rect_up.x = x_position
+        self.rect_down.x = x_position
+
+        self.randomize_height()
+
+    def randomize_height(self):
+        height_offset = random.randint(100, HEIGHT - 100)
+        self.rect_up.y = height_offset - self.rect_down.height - pipe_gap // 2
+        self.rect_down.y = height_offset + pipe_gap // 2
+
+    def update(self):
+        self.rect_up.x -= pipe_speed
+        self.rect_down.x -= pipe_speed
+
+    def draw(self, screen):
+        screen.blit(self.image_up, self.rect_up)
+        screen.blit(self.image_down, self.rect_down)
+
+
+pipes = pygame.sprite.Group()
+pipes.add(Pipe(WIDTH + pipe_offset))
+pipes.add(Pipe(WIDTH + pipe_offset*2))
+pipes.add(Pipe(WIDTH + pipe_offset*3))
+
 bg_image = pygame.image.load(BACKGROUND_PATH)
 bird = Bird()
 
@@ -79,7 +119,15 @@ while GAME_RUNNING:
 
     # move the bird
     bird.update()
+    pipes.update()
+
     bird.draw(screen)
+    for pipe in pipes:
+        pipe.draw(screen)
+
+    for pipe in pipes:
+        if bird.rect.colliderect(pipe.rect_up) or bird.rect.colliderect(pipe.rect_down):
+            GAME_RUNNING = False
 
     pygame.display.flip()
     clock.tick(FPS)
