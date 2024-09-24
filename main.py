@@ -3,9 +3,8 @@ import random
 import pygame
 
 pygame.init()
-pygame.font.init()
 clock = pygame.time.Clock()
-my_font = pygame.font.SysFont('Comic Sans MS', 72)
+
 FPS = 60
 WIDTH, HEIGHT = 800, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -41,7 +40,7 @@ class Bird(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (WIDTH // 2, HEIGHT // 2)
         self.gravity = bird_acceleration
-        self.speed = bird_init_speed
+        self.speed = -bird_init_speed
         self.max_speed = bird_max_speed
 
     def update(self):
@@ -111,7 +110,13 @@ pipes.add(Pipe(WIDTH + pipe_offset*2))
 
 bg_image = pygame.image.load(BACKGROUND_PATH)
 bird = Bird()
-text_surface = my_font.render('Flippy Wings', False, (0,0,255))
+
+pygame.font.init()
+my_font = pygame.font.SysFont('Comic Sans MS', 72)
+text_surface = my_font.render('Flippy Wings', False, (0, 0, 255))
+
+GAME_STARTED = False
+
 while GAME_RUNNING:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -124,9 +129,21 @@ while GAME_RUNNING:
     # set background
     screen.blit(bg_image, (0, 0))
     screen.blit(bg_image, (WIDTH // 2, 0))
-    screen.blit(text_surface, (0, 0))
+
+    while not GAME_STARTED:
+        screen.blit(text_surface, (WIDTH // 2 - text_surface.get_width() // 2, 0))
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    GAME_STARTED = True
+        pygame.display.flip()
+        clock.tick(FPS)
+
     # move the bird
-    #bird.update()
+    bird.update()
     pipes.update()
 
     bird.draw(screen)
