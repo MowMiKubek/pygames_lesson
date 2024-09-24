@@ -72,8 +72,8 @@ class Bird(pygame.sprite.Sprite):
 class Pipe(pygame.sprite.Sprite):
     def __init__(self, x_position):
         super().__init__()
-        self.image_up = pygame.image.load(PIPE_UP_IMG_PATH)
-        self.image_down = pygame.image.load(PIPE_DOWN_IMG_PATH)
+        self.image_up = pygame.transform.scale_by(pygame.image.load(PIPE_UP_IMG_PATH), 1.5)
+        self.image_down = pygame.transform.scale_by(pygame.image.load(PIPE_DOWN_IMG_PATH), 1.5)
         self.rect_up = self.image_up.get_rect()
         self.rect_down = self.image_down.get_rect()
 
