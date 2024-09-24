@@ -114,6 +114,7 @@ bird = Bird()
 pygame.font.init()
 my_font = pygame.font.SysFont('Comic Sans MS', 72)
 text_surface = my_font.render('Flippy Wings', False, (0, 0, 255))
+text_gameover = my_font.render('GAME OVER', False, (0, 255, 0))
 
 GAME_STARTED = False
 
@@ -154,5 +155,16 @@ while GAME_RUNNING:
         if bird.rect.colliderect(pipe.rect_up) or bird.rect.colliderect(pipe.rect_down):
             GAME_RUNNING = False
 
+    pygame.display.flip()
+    clock.tick(FPS)
+
+
+while True:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            exit()
+
+    screen.blit(text_gameover, (WIDTH // 2 - text_surface.get_width() // 2, 0))
     pygame.display.flip()
     clock.tick(FPS)
