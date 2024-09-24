@@ -3,8 +3,9 @@ import random
 import pygame
 
 pygame.init()
+pygame.font.init()
 clock = pygame.time.Clock()
-
+my_font = pygame.font.SysFont('Comic Sans MS', 72)
 FPS = 60
 WIDTH, HEIGHT = 800, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -110,7 +111,7 @@ pipes.add(Pipe(WIDTH + pipe_offset*2))
 
 bg_image = pygame.image.load(BACKGROUND_PATH)
 bird = Bird()
-
+text_surface = my_font.render('Flippy Wings', False, (0,0,255))
 while GAME_RUNNING:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -123,9 +124,9 @@ while GAME_RUNNING:
     # set background
     screen.blit(bg_image, (0, 0))
     screen.blit(bg_image, (WIDTH // 2, 0))
-
+    screen.blit(text_surface, (0, 0))
     # move the bird
-    bird.update()
+    #bird.update()
     pipes.update()
 
     bird.draw(screen)
