@@ -7,24 +7,47 @@ clock = pygame.time.Clock()
 
 FPS = 60
 WIDTH, HEIGHT = 800, 600
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
 GAME_RUNNING = True
+GAME_STARTED = False
 
 BACKGROUND_PATH = "assets/bg.png"
 
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+
+# Pipes section
 pipes = pygame.sprite.Group()
 pipes.add(create_pipe(WIDTH, 1))
 pipes.add(create_pipe(WIDTH, 2))
 
+# Bird section
 bg_image = pygame.image.load(BACKGROUND_PATH)
 bird = Bird()
 
+# Font section
 pygame.font.init()
-my_font = pygame.font.SysFont('Comic Sans MS', 72)
-text_surface = my_font.render('Flippy Wings', False, (0, 0, 255))
-text_gameover = my_font.render('GAME OVER', False, (0, 255, 0))
+font_game_over = pygame.font.SysFont('Comic Sans MS', 72)
+font_score = pygame.font.SysFont('comicsans', 48)
 
-GAME_STARTED = False
+text_surface = font_game_over.render('Flippy Wings', False, (0, 0, 255))
+text_gameover = font_game_over.render('GAME OVER', False, (0, 255, 0))
+
+score = 0
+number_of_pipes_on_the_right = 2
+
+def check_if_scored(pipes):
+    global number_of_pipes_on_the_right
+    n = 0
+    score = 0
+    for pipe in pipes.sprites():
+        if pipe.rect_up.right > WIDTH // 2:
+            n += 1
+
+    if n < number_of_pipes_on_the_right:
+        score = 1
+
+    number_of_pipes_on_the_right = n
+    return score
+
 
 while GAME_RUNNING:
     for event in pygame.event.get():
@@ -63,8 +86,14 @@ while GAME_RUNNING:
         if bird.rect.colliderect(pipe.rect_up) or bird.rect.colliderect(pipe.rect_down):
             GAME_RUNNING = False
 
+    score += check_if_scored(pipes)
+
+    text_score = font_score.render(f"score: {score}", False, (0, 0, 255))
+    screen.blit(text_score, (0, 0))
+
     pygame.display.flip()
     clock.tick(FPS)
+
 
 
 while True:
