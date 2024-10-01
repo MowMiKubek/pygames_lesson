@@ -95,13 +95,37 @@ while GAME_RUNNING:
     clock.tick(FPS)
 
 
+score_submitting = True
+name = "Player"
 
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
+        if score_submitting:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    print("Submitting")
+                    with open("leaderboard.txt", "a") as file:
+                        file.write(f"{name} {score}\n")
+                    score_submitting = False
+                elif event.key == pygame.K_BACKSPACE:
+                    print("Backspace")
+                    name = name[:-1]
+                else:
+                    name += event.unicode
 
+
+    screen.blit(bg_image, (0, 0))
+    screen.blit(bg_image, (WIDTH // 2, 0))
+    bird.draw(screen)
+    for pipe in pipes:
+        pipe.draw(screen)
+
+    name_text = font_score.render(name, False, (0, 0, 255))
     screen.blit(text_gameover, (WIDTH // 2 - text_surface.get_width() // 2, 0))
+    screen.blit(name_text, (WIDTH // 2 - name_text.get_rect().width // 2, HEIGHT // 2 - name_text.get_rect().height // 2))
+
     pygame.display.flip()
     clock.tick(FPS)
