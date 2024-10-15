@@ -14,6 +14,7 @@ bird_image = pygame.image.load(BIRD_UP_IMG_PATH)
 bird_rect = bird_image.get_rect()
 bird_rect.center = (WIDTH // 2, HEIGHT // 2)
 
+
 class Bird(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()

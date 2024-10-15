@@ -32,20 +32,15 @@ text_surface = font_game_over.render('Flippy Wings', False, (0, 0, 255))
 text_gameover = font_game_over.render('GAME OVER', False, (0, 255, 0))
 
 game_score = 0
-number_of_pipes_on_the_right = 2
+
 
 def check_if_scored(pipes):
-    global number_of_pipes_on_the_right
-    n = 0
     score = 0
     for pipe in pipes.sprites():
-        if pipe.rect_up.right > WIDTH // 2:
-            n += 1
+        if pipe.rect_up.right < bird.rect.centerx and not pipe.scored:
+            score += 1
+            pipe.scored = True
 
-    if n < number_of_pipes_on_the_right:
-        score = 1
-
-    number_of_pipes_on_the_right = n
     return score
 
 
@@ -85,6 +80,9 @@ while GAME_RUNNING:
     for pipe in pipes:
         if bird.rect.colliderect(pipe.rect_up) or bird.rect.colliderect(pipe.rect_down):
             GAME_RUNNING = False
+
+    if bird.rect.bottom > HEIGHT:
+        GAME_RUNNING = False
 
     game_score += check_if_scored(pipes)
 

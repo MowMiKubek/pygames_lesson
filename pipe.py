@@ -21,6 +21,8 @@ class Pipe(pygame.sprite.Sprite):
         self.rect_up.x = x_position
         self.rect_down.x = x_position
 
+        self.scored = False
+
         self.randomize_height()
 
     def randomize_height(self):
@@ -32,6 +34,7 @@ class Pipe(pygame.sprite.Sprite):
         self.randomize_height()
         self.rect_up.x = WIDTH + self.rect_down.width
         self.rect_down.x = WIDTH + self.rect_down.width
+        self.scored = False
 
     def update(self):
         self.rect_up.x -= pipe_speed
