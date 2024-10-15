@@ -6,7 +6,7 @@ PIPE_DOWN_IMG_PATH = "assets/pipeup.png"
 WIDTH, HEIGHT = 800, 600
 
 pipe_gap = 200
-pipe_offset = 400
+pipe_offset = 300
 pipe_speed = 3
 
 
@@ -26,22 +26,19 @@ class Pipe(pygame.sprite.Sprite):
         self.randomize_height()
 
     def randomize_height(self):
-        height_offset = random.randint(100, HEIGHT - 100)
+        height_offset = random.randint(150, HEIGHT - 150)
         self.rect_up.y = height_offset - self.rect_down.height - pipe_gap // 2
         self.rect_down.y = height_offset + pipe_gap // 2
 
-    def reset_pipe(self):
+    def reset_pipe(self, x_position):
         self.randomize_height()
-        self.rect_up.x = WIDTH + self.rect_down.width
-        self.rect_down.x = WIDTH + self.rect_down.width
+        self.rect_up.x = max(x_position, WIDTH)
+        self.rect_down.x = max(x_position, WIDTH)
         self.scored = False
 
     def update(self):
         self.rect_up.x -= pipe_speed
         self.rect_down.x -= pipe_speed
-
-        if self.rect_up.right < 0:
-            self.reset_pipe()
 
     def draw(self, screen):
         screen.blit(self.image_up, self.rect_up)

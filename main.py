@@ -1,6 +1,6 @@
 import pygame
 from bird import Bird
-from pipe import Pipe, create_pipe
+from pipe import Pipe, create_pipe, pipe_offset
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -16,8 +16,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 # Pipes section
 pipes = pygame.sprite.Group()
-pipes.add(create_pipe(WIDTH, 1))
-pipes.add(create_pipe(WIDTH, 2))
+pipes.add([create_pipe(WIDTH, i) for i in range(WIDTH // pipe_offset + 1)])
 
 # Bird section
 bg_image = pygame.image.load(BACKGROUND_PATH)
@@ -32,6 +31,12 @@ text_surface = font_game_over.render('Flippy Wings', False, (0, 0, 255))
 text_gameover = font_game_over.render('GAME OVER', False, (0, 255, 0))
 
 game_score = 0
+
+
+def handle_pipes(pipes):
+    pipes_sorted = sorted(pipes, key=lambda pipe: pipe.rect_up.x)
+    if pipes_sorted[0].rect_up.right < 0:
+        pipes_sorted[0].reset_pipe(pipes_sorted[-1].rect_up.x + pipe_offset)
 
 
 def check_if_scored(pipes):
@@ -85,6 +90,7 @@ while GAME_RUNNING:
         GAME_RUNNING = False
 
     game_score += check_if_scored(pipes)
+    handle_pipes(pipes)
 
     text_score = font_score.render(f"score: {game_score}", False, (0, 0, 255))
     screen.blit(text_score, (0, 0))
@@ -118,7 +124,7 @@ while True:
                 elif event.key == pygame.K_BACKSPACE:
                     print("Backspace")
                     name = name[:-1]
-                else:
+                elif event.key and event.unicode.isalnum(): # only letters and numbers
                     name += event.unicode
 
     screen.blit(bg_image, (0, 0))
