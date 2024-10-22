@@ -1,6 +1,6 @@
 import pygame
 from bird import Bird
-from pipe import create_pipe, pipe_offset
+from pipe import create_pipe, Pipe
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -9,10 +9,31 @@ FPS = 60
 WIDTH, HEIGHT = 800, 600
 BACKGROUND_PATH = "assets/bg.png"
 
+
+DIFFICULTY_SETTINGS = {
+    "Easy": {'pipe_gap': 200, 'pipe_offset': 300, 'pipe_speed': 3},
+    "Medium": {'pipe_gap': 200, 'pipe_offset': 200, 'pipe_speed': 4},
+    "Hard": {'pipe_gap': 150, 'pipe_offset': 200, 'pipe_speed': 5}
+}
+
+difficulty = "Easy"
+
+
+def set_difficulty(diff):
+    selected_difficulty = DIFFICULTY_SETTINGS[difficulty]
+    Pipe.pipe_offset = selected_difficulty["pipe_offset"]
+    Pipe.pipe_offset = selected_difficulty["pipe_gap"]
+    Pipe.pipe_speed = selected_difficulty["pipe_speed"]
+
+"""
+    Somewhere in the code we call this function
+"""
+set_difficulty(difficulty)
+
 GAME_RUNNING = True
 GAME_STARTED = False
 pipes = pygame.sprite.Group()
-pipes.add([create_pipe(WIDTH, i) for i in range(WIDTH // pipe_offset + 1)])
+pipes.add([create_pipe(WIDTH, i) for i in range(WIDTH // Pipe.pipe_offset + 1)])
 game_score = 0
 bird = Bird()
 
@@ -37,7 +58,7 @@ def reset_game():
     GAME_RUNNING = True
     GAME_STARTED = False
     pipes = pygame.sprite.Group()
-    pipes.add([create_pipe(WIDTH, i) for i in range(WIDTH // pipe_offset + 1)])
+    pipes.add([create_pipe(WIDTH, i) for i in range(WIDTH // Pipe.pipe_offset + 1)])
     game_score = 0
     bird = Bird()
 
@@ -45,7 +66,7 @@ def reset_game():
 def handle_pipes(pipes):
     pipes_sorted = sorted(pipes, key=lambda pipe: pipe.rect_up.x)
     if pipes_sorted[0].rect_up.right < 0:
-        pipes_sorted[0].reset_pipe(pipes_sorted[-1].rect_up.x + pipe_offset)
+        pipes_sorted[0].reset_pipe(pipes_sorted[-1].rect_up.x + Pipe.pipe_offset)
 
 
 def check_if_scored(pipes):
