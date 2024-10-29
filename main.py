@@ -24,6 +24,7 @@ SOUND_EFFECTS = {
 }
 
 SOUND_EFFECTS["flap"].set_volume(0.3)
+SOUND_EFFECTS["score"].set_volume(0.3)
 
 difficulty = "Easy"
 
@@ -181,9 +182,9 @@ while True:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:
                         print("Submitting")
-                        with open("leaderboard.txt", "a") as file:
+                        with open(f"leaderboard{difficulty}.txt", "a") as file:
                             file.write(f"{name} {game_score}\n")
-                        with open("leaderboard.txt", "r") as file:
+                        with open(f"leaderboard{difficulty}.txt", "r") as file:
                             for line in file:
                                 result = line.split(' ')
                                 scores_list.append((result[0], int(result[1])))
