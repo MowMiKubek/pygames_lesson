@@ -11,8 +11,8 @@ BACKGROUND_PATH = "assets/bg.png"
 
 
 DIFFICULTY_SETTINGS = {
-    "Easy": {'pipe_gap': 200, 'pipe_offset': 300, 'pipe_speed': 3},
-    "Medium": {'pipe_gap': 200, 'pipe_offset': 200, 'pipe_speed': 4},
+    "Easy": {'pipe_gap': 200, 'pipe_offset': 400, 'pipe_speed': 3},
+    "Medium": {'pipe_gap': 200, 'pipe_offset': 300, 'pipe_speed': 4},
     "Hard": {'pipe_gap': 150, 'pipe_offset': 200, 'pipe_speed': 5}
 }
 
@@ -22,7 +22,7 @@ difficulty = "Easy"
 def set_difficulty(diff):
     selected_difficulty = DIFFICULTY_SETTINGS[difficulty]
     Pipe.pipe_offset = selected_difficulty["pipe_offset"]
-    Pipe.pipe_offset = selected_difficulty["pipe_gap"]
+    Pipe.pipe_gap = selected_difficulty["pipe_gap"]
     Pipe.pipe_speed = selected_difficulty["pipe_speed"]
 
 """
