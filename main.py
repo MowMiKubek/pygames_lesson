@@ -93,7 +93,30 @@ while True:
         screen.blit(bg_image, (0, 0))
         screen.blit(bg_image, (WIDTH // 2, 0))
 
+        menu_idx = 0
         while not GAME_STARTED:
+            MENU_COLOR = (255, 204, 0, 128)  # RGBA red green blue alpha [0 - 255]
+            menu_surface = pygame.Surface((WIDTH // 2, HEIGHT // 2), pygame.SRCALPHA)
+            menu_rect = menu_surface.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+            menu_surface.fill(MENU_COLOR)
+
+            # print * if idx = 0 otherwise '  '
+            text_surface = font_score.render(f"{'*' if menu_idx == 0 else '  '}1. Easy", False, (0, 0, 255))
+            menu_surface.blit(text_surface, (0, 0))
+
+            text_surface = font_score.render(f"{'*' if menu_idx == 1 else '  '}2. Medium", False, (0, 0, 255))
+            menu_surface.blit(text_surface, (0, 45))
+
+            text_surface = font_score.render(f"{'*' if menu_idx == 2 else '  '}3. Hard", False, (0, 0, 255))
+            menu_surface.blit(text_surface, (0, 90))
+
+            text_surface = font_score.render("Press space to start", False, (0, 0, 255))
+            menu_surface.blit(text_surface, (0, 180))
+
+            text_surface = font_score.render("the game", False, (0, 0, 255))
+            menu_surface.blit(text_surface, (0, 225))
+
+            screen.blit(menu_surface, menu_rect)
             screen.blit(welcome_text, (WIDTH // 2 - welcome_text.get_width() // 2, 0))
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -102,9 +125,21 @@ while True:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
                         GAME_STARTED = True
+                    if event.key == pygame.K_UP:
+                        menu_idx = max(0, menu_idx - 1)
+                    if event.key == pygame.K_DOWN:
+                        menu_idx = min(2, menu_idx + 1)
+                    # if event.key == pygame.K_1:
+                    #     difficulty = "Easy"
+                    # if event.key == pygame.K_2:
+                    #     difficulty = "Medium"
+                    # if event.key == pygame.K_3:
+                    #     difficulty = "Hard"
+                    difficulty = list(DIFFICULTY_SETTINGS.keys())[menu_idx]
+                    set_difficulty(difficulty)
+                    # print(difficulty, Pipe.pipe_offset, Pipe.pipe_gap, Pipe.pipe_speed)
             pygame.display.flip()
             clock.tick(FPS)
-
         # move the bird
         bird.update()
         pipes.update()
@@ -123,7 +158,7 @@ while True:
         game_score += check_if_scored(pipes)
         handle_pipes(pipes)
 
-        text_score = font_score.render(f"score: {game_score}", False, (0, 0, 255))
+        text_score = font_score.render(f"score ({difficulty}): {game_score}", False, (0, 0, 255))
         screen.blit(text_score, (0, 0))
 
         pygame.display.flip()
