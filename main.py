@@ -4,6 +4,7 @@ from pipe import create_pipe, Pipe
 
 pygame.init()
 clock = pygame.time.Clock()
+pygame.mixer.init()
 
 FPS = 60
 WIDTH, HEIGHT = 800, 600
@@ -16,8 +17,15 @@ DIFFICULTY_SETTINGS = {
     "Hard": {'pipe_gap': 150, 'pipe_offset': 200, 'pipe_speed': 5}
 }
 
-difficulty = "Easy"
+SOUND_EFFECTS = {
+    "flap": pygame.mixer.Sound('assets/sfx/flap.wav'),
+    "dead": pygame.mixer.Sound('assets/sfx/dead.wav'),
+    "score": pygame.mixer.Sound('assets/sfx/score.wav')
+}
 
+SOUND_EFFECTS["flap"].set_volume(0.3)
+
+difficulty = "Easy"
 
 def set_difficulty(diff):
     selected_difficulty = DIFFICULTY_SETTINGS[difficulty]
@@ -88,6 +96,7 @@ while True:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     bird.bounce()
+                    SOUND_EFFECTS["flap"].play()
 
         # set background
         screen.blit(bg_image, (0, 0))
@@ -129,15 +138,8 @@ while True:
                         menu_idx = max(0, menu_idx - 1)
                     if event.key == pygame.K_DOWN:
                         menu_idx = min(2, menu_idx + 1)
-                    # if event.key == pygame.K_1:
-                    #     difficulty = "Easy"
-                    # if event.key == pygame.K_2:
-                    #     difficulty = "Medium"
-                    # if event.key == pygame.K_3:
-                    #     difficulty = "Hard"
                     difficulty = list(DIFFICULTY_SETTINGS.keys())[menu_idx]
                     set_difficulty(difficulty)
-                    # print(difficulty, Pipe.pipe_offset, Pipe.pipe_gap, Pipe.pipe_speed)
             pygame.display.flip()
             clock.tick(FPS)
         # move the bird
